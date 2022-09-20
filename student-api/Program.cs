@@ -55,8 +55,8 @@ builder.Services.AddAuthentication(x =>
             });
 
 builder.Services.AddDbContext<StudentManagementContext>();
-//builder.Services.AddTransient<IStudentService, StudentService>();
-//builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IStudentService, StudentService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
