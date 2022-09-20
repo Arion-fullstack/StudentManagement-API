@@ -55,7 +55,7 @@ builder.Services.AddAuthentication(x =>
             });
 
 builder.Services.AddDbContext<StudentManagementContext>();
-//builder.Services.AddTransient<IStudentService, StudentService>();
+builder.Services.AddTransient<IStudentService, StudentService>();
 //builder.Services.AddTransient<IAuthService, AuthService>();
 var app = builder.Build();
 
