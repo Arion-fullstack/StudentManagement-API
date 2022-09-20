@@ -7,7 +7,7 @@ namespace student_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   
+
     public class AuthController : ControllerBase
     {
         
