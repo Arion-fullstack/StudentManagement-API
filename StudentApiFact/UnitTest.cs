@@ -16,7 +16,7 @@ namespace StudentApiFact
                     .Build();
 
             _dbContext = new StudentManagementContext();
-         //   _authController = new AuthController(new AuthService(configuration, _dbContext));
+            _authController = new AuthController(new AuthService(configuration, _dbContext));
             _studentController = new StudentController(new StudentService());
         }
         [Fact]
@@ -24,8 +24,8 @@ namespace StudentApiFact
         {
             UserRequest student = new UserRequest()
             {
-                UserName = "string",
-                Password = "string"
+                UserName = "admin",
+                Password = "123"
             };
             var result = _authController.Login(student) as ObjectResult;
 
@@ -48,7 +48,7 @@ namespace StudentApiFact
         {
             UserRequest student = new UserRequest()
             {
-                UserName = "string",
+                UserName = "admin",
                 Password = "stringdqwqwd"
             };
             var result = _authController.Login(student) as ObjectResult;
@@ -61,7 +61,7 @@ namespace StudentApiFact
         {
             UserRequest student = new UserRequest()
             {
-                UserName = "testUser123",
+                UserName = "testUsear123",
                 Password = "123"
             };
             var result = await _authController.Register(student) as ObjectResult;
@@ -74,8 +74,8 @@ namespace StudentApiFact
         {
             UserRequest student = new UserRequest()
             {
-                UserName = "string",
-                Password = "string"
+                UserName = "admin",
+                Password = "123"
             };
             var result = await _authController.Register(student) as ObjectResult;
 
