@@ -19,6 +19,12 @@ namespace StudentApiFact
             _authController = new AuthController(new AuthService(configuration, _dbContext));
             _studentController = new StudentController(new StudentService());
         }
+
+        #region test login
+        /// <summary>
+        /// Login successful
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task TestLoginOk()
         {
@@ -31,6 +37,12 @@ namespace StudentApiFact
 
             Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
         }
+
+        /// <summary>
+        /// Login with username does not exist
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
         public async Task TestLoginNotFoundUsername()
         {
             UserRequest student = new UserRequest()
@@ -43,6 +55,11 @@ namespace StudentApiFact
             Assert.Equal(StatusCodes.Status404NotFound, result.StatusCode);
         }
 
+
+        /// <summary>
+        /// Login with incorrect password
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task TestLoginPasswordFail()
         {
@@ -56,6 +73,13 @@ namespace StudentApiFact
             Assert.Equal(StatusCodes.Status401Unauthorized, result.StatusCode);
         }
 
+        #endregion
+
+        #region test register
+        /// <summary>
+        /// Register successful
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task TestRegisterOK()
         {
@@ -69,6 +93,10 @@ namespace StudentApiFact
             Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
         }
 
+        /// <summary>
+        /// Register with username is exist
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task TestRegisterAlreadyExistst()
         {
@@ -81,6 +109,14 @@ namespace StudentApiFact
 
             Assert.Equal(StatusCodes.Status409Conflict, result.StatusCode);
         }
+
+        #endregion
+
+        #region test student
+        /// <summary>
+        /// Get list student
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task TestGetListStudent()
         {
@@ -89,6 +125,10 @@ namespace StudentApiFact
             Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
         }
 
+        /// <summary>
+        /// Get student by id
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task TestGetStudent()
         {
@@ -97,6 +137,11 @@ namespace StudentApiFact
             Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
         }
 
+
+        /// <summary>
+        /// Get student by id does'n exist
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task TestGetStudentNotFound()
         {
@@ -104,5 +149,6 @@ namespace StudentApiFact
             var result = await _studentController.GetStudent(studentId) as ObjectResult;
             Assert.Equal(StatusCodes.Status404NotFound, result.StatusCode);
         }
+        #endregion
     }
 }
