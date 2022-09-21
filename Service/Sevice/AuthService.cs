@@ -29,6 +29,7 @@ namespace Service.Sevice
                 {
                     Code = 404,
                     Message = "Username does not exist!",
+                    Data = null
                 };
             }
             else

@@ -12,19 +12,22 @@ namespace Service.Sevice
 {
     public class StudentService: IStudentService
     {
+        private readonly StudentManagementContext _studentManagementContext;
+
+        public StudentService(StudentManagementContext studentManagementContext)
+        {
+            _studentManagementContext = studentManagementContext;
+        }
         /// <summary>
         /// Delete All Student
         /// </summary>
         /// <returns></returns>
         public async Task<bool> DeleteAllStudentAsync()
         {
-            using (StudentManagementContext db = new StudentManagementContext())
-            {
-                var temp = await db.Students.ToListAsync();
-                db.RemoveRange(temp);
-                await db.SaveChangesAsync();
-                return true;
-            }
+            var temp = await _studentManagementContext.Students.ToListAsync();
+            _studentManagementContext.RemoveRange(temp);
+            await _studentManagementContext.SaveChangesAsync();
+            return true;
         }
 
         /// <summary>
@@ -34,9 +37,8 @@ namespace Service.Sevice
         /// <returns></returns>
         public async Task<MyResponseObject<Student>> DeleteStudentAsync(int? id)
         {
-            using (StudentManagementContext db = new StudentManagementContext())
-            {
-                var entity = await db.Students.FindAsync(id);
+            
+                var entity = await _studentManagementContext.Students.FindAsync(id);
 
                 if (entity == null)
                 {
@@ -47,8 +49,8 @@ namespace Service.Sevice
                         Code = 404,
                     };
                 }
-                db.Remove(entity);
-                await db.SaveChangesAsync();
+                _studentManagementContext.Remove(entity);
+                await _studentManagementContext.SaveChangesAsync();
 
                 return new MyResponseObject<Student>
                 {
@@ -56,7 +58,6 @@ namespace Service.Sevice
                     Message = "ok",
                     Code = 200,
                 };
-            }
         }
 
         /// <summary>
@@ -67,14 +68,12 @@ namespace Service.Sevice
         /// <returns></returns>
         public async Task<MyResponseList<Student>> GetAllStudentAsync(int page = 1, int take = 10)
         {
-            using (StudentManagementContext db = new StudentManagementContext())
-            {
-                int count = await db.Students.CountAsync();
+            int count = await _studentManagementContext.Students.CountAsync();
 
                 int totalPage = (int)Math.Ceiling(((decimal)count / take));
                 int nextPage = 2;
                 int curentPage = page;
-                var data = await db.Students.Skip((page - 1) * take).Take(take).ToListAsync();
+                var data = await _studentManagementContext.Students.Skip((page - 1) * take).Take(take).ToListAsync();
                 MyResponseList<Student> res = new MyResponseList<Student>()
                 {
                     Message = "ok",
@@ -91,7 +90,6 @@ namespace Service.Sevice
                     }
                 };
                 return res;
-            }
         }
 
         /// <summary>
@@ -101,9 +99,7 @@ namespace Service.Sevice
         /// <returns></returns>
         public async Task<MyResponseObject<Student>> GetStudentAsync(int? id)
         {
-            using (StudentManagementContext db = new StudentManagementContext())
-            {
-                var entity = await db.Students.FindAsync(id);
+             var entity = await _studentManagementContext.Students.FindAsync(id);
                 if (entity == null)
                     return new MyResponseObject<Student>
                     {
@@ -118,7 +114,6 @@ namespace Service.Sevice
                         Code = 200,
                         Data = entity
                     };
-            }
         }
 
         /// <summary>
@@ -134,10 +129,9 @@ namespace Service.Sevice
                 throw new ArgumentNullException("entity");
             }
 
-            using (StudentManagementContext db = new StudentManagementContext())
-            {
-                await db.Students.AddAsync(student);
-                await db.SaveChangesAsync();
+          
+                await _studentManagementContext.Students.AddAsync(student);
+                await _studentManagementContext.SaveChangesAsync();
 
                 return new MyResponseObject<Student>
                 {
@@ -145,7 +139,6 @@ namespace Service.Sevice
                     Code = 200,
                     Data = student
                 };
-            }
         }
 
         /// <summary>
@@ -155,9 +148,8 @@ namespace Service.Sevice
         /// <returns></returns>
         public async Task<MyResponseList<Student>> SearchStudentAsync(string? name)
         {
-            using (StudentManagementContext db = new StudentManagementContext())
-            {
-                var result = await db.Students
+           
+                var result = await _studentManagementContext.Students
                 .Where(t => t.FirstName.Contains(name) || t.LastName.Contains(name)).ToListAsync();
                 return new MyResponseList<Student>
                 {
@@ -165,7 +157,6 @@ namespace Service.Sevice
                     Data = result,
                     Code = 200
                 };
-            }
         }
 
         /// <summary>
@@ -180,19 +171,25 @@ namespace Service.Sevice
                 return new MyResponseObject<Student>
                 {
                     Message = "Not Found",
-                    Code = 400,
+                    Code = 404,
                     Data = null
                 };
             }
 
 
-            using (StudentManagementContext db = new StudentManagementContext())
-            {
-                var result = await db.Students.FindAsync(student.Id);
+           
+                var result = await _studentManagementContext.Students.FindAsync(student.Id);
+                if(result == null)
+                    return new MyResponseObject<Student>
+                    {
+                        Message = "Not Found",
+                        Code = 404,
+                        Data = null
+                    };
                 result.FirstName = student.FirstName;
                 result.LastName = student.LastName;
                 result.Email = student.Email;
-                await db.SaveChangesAsync();
+                await _studentManagementContext.SaveChangesAsync();
 
                 return new MyResponseObject<Student>
                 {
@@ -201,6 +198,5 @@ namespace Service.Sevice
                     Data = result
                 };
             }
-        }
     }
 }
